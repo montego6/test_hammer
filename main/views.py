@@ -16,28 +16,45 @@ class LoginGetCodeView(APIView):
         phone_number = request.data.get('phone_number')
         code = generate_login_code()
         code_instance = LoginCode.objects.create(code=code, phone_number=phone_number, expires_at=datetime.now() + timedelta(minutes=1))
-        return Response({'phone_nuber': phone_number, 'code': code_instance.code}, status=status.HTTP_200_OK)
+        return Response({
+            'status': 'code sent',
+            'phone_nuber': phone_number, 
+            'code': code_instance.code}, 
+            status=status.HTTP_200_OK)
 
 
 class LoginView(APIView):
     def post(self, request):
         phone_number = request.data.get('phone_number')
-        code = request.data.get
+        code = request.data.get('code')
+        
         if not phone_number:
             return Response({'error': 'phone_number should be provided'}, status=status.HTTP_400_BAD_REQUEST)
         if not code:
             return Response({'error': 'code should be provided'}, status=status.HTTP_400_BAD_REQUEST)
+        
         code_db = LoginCode.objects.filter(code=code, phone_number=phone_number, expires_at__gt=datetime.now())
         if code_db.exists():
             user = authenticate(phone_number=phone_number)
             if user is None:
-                user = User.create_user(phone_number=phone_number)
+                user = User.objects.create_user(phone_number=phone_number)
             login(request, user)
+            return redirect('profile-page')
+        return Response({'login': 'failed'})
 
 @login_required
 def index(request):
+    return HttpResponse('Index page')
+
+
+@login_required
+def profile(request):
     return HttpResponse('Profile page')
 
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('login-page')
 
 
 # Create your views here.

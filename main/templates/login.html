@@ -11,9 +11,17 @@
     {% csrf_token %}
     <div id="login-form">
         <h2>Login</h2>
-        <p>Введите ваш телефон в формате 7XXXXXXXXXX</p>
-        <label for="phone_number">Телефон</label>
-        <input type="text" name="phone_number">
-        <button id="login-button">Отправить</button>
+        <div id="login-first-step">
+            <p>Введите ваш телефон в формате 7XXXXXXXXXX</p>
+            <label for="phone_number">Телефон</label>
+            <input type="text" name="phone_number">
+            <button id="login-code-button">Отправить</button>
+        </div>
+        <div id="login-second-step" class="invisible">
+            <p>Введите полученный код</p>
+            <label for="code">Код</label>
+            <input type="text" name="code">
+            <button id="login-button">Отправить</button>
+        </div>
     </div>
 </body>

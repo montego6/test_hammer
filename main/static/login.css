@@ -9,3 +9,7 @@
     background-color: white;
     padding: 18px;
 }
+
+.invisible {
+    display: none !important;
+}
