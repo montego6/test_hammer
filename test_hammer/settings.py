@@ -71,6 +71,10 @@ TEMPLATES = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'users.auth_backend.CustomAuthBackend',
+]
+
 WSGI_APPLICATION = 'test_hammer.wsgi.application'
 
 
