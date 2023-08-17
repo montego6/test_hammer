@@ -8,6 +8,7 @@
     <script src="{% static 'profile.js' %}" defer></script>
 </head>
 <body>
+    {% csrf_token %}
     <div id="profile-wrapper">
         <a href="{% url 'logout' %}">Выйти</a>
         <h2>Profile</h2>

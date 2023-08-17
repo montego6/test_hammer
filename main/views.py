@@ -62,11 +62,23 @@ class GetUserProfileView(APIView):
 class GetInvitedView(APIView):
     def post(self, request):
         user = request.user
+        if not user.is_authenticated:
+            return Response({'status': 'error', 'detail': 'you must login'}, status=status.HTTP_401_UNAUTHORIZED)
+        
         invite_code = request.data.get('invite_code')
         if not invite_code:
             return Response({'error': 'code not provided'}, status=status.HTTP_400_BAD_REQUEST)
         if not Profile.objects.filter(invite_code=invite_code).exists():
-            return Response({'error': 'profile with such code does not exist'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'profile with such code does not exist'}, status=status.HTTP_403_FORBIDDEN)
+        
+        try:
+            user_profile = Profile.objects.get(user=user)
+        except Profile.DoesNotExist:
+            return Response({'status': 'error', 'detail': 'profile for this user does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            if user_profile.code_invited:
+                return Response({'status': 'error', 'detail': 'you have already activated invite code'}, status=status.HTTP_403_FORBIDDEN)
+
         profile = Profile.objects.get(invite_code=invite_code)
         profile.invited_users.add(user)
         Profile.objects.filter(user=request.user).update(code_invited=invite_code)
@@ -77,8 +89,7 @@ class GetInvitedView(APIView):
 
 @login_required
 def index(request):
-    return HttpResponse('Index page')
-
+    return redirect('profile-page')
 
 
 @login_required
