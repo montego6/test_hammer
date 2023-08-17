@@ -11,6 +11,12 @@
     <div id="profile-wrapper">
         <a href="{% url 'logout' %}">Выйти</a>
         <h2>Profile</h2>
-
+        <span>Ваш инвайт код: <span id="invite-code"></span></span>
+        <div id="get-invited" class="invisible">
+            <p>Введите код приглашения</p>
+            <label for="code-invited">Код</label>
+            <input type="text" name="code-invited">
+            <button id="button-get-invited">Отправить</button>
+        </div>
     </div>
 </body>

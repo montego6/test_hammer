@@ -1,6 +1,6 @@
 from django.urls import path
 from django.views.generic import TemplateView
-from . views import index, LoginGetCodeView, LoginView, logout_view, GetUserProfileView
+from . views import index, LoginGetCodeView, LoginView, logout_view, GetUserProfileView, GetInvitedView
 
 
 urlpatterns = [
@@ -11,4 +11,5 @@ urlpatterns = [
     path('api/login/code/', LoginGetCodeView.as_view(), name='api-login-code'),
     path('api/login/', LoginView.as_view(), name='api-login'),
     path('api/profile/', GetUserProfileView.as_view(), name='api-profile'),
+    path('api/get-invited/', GetInvitedView.as_view(), name='api-get-invited'),
     ]

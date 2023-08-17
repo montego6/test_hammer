@@ -50,15 +50,30 @@ class LoginView(APIView):
 
 class GetUserProfileView(APIView):
     def get(self, request):
-        user = None
-        if hasattr(request, 'user'):
-            user = request.user
+        user = request.user
         try:
             profile = Profile.objects.get(user=user)
         except Profile.DoesNotExist:
             return Response({'error': 'profile does not exist'}, status=status.HTTP_404_NOT_FOUND)
         serializer = ProfileSerializer(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class GetInvitedView(APIView):
+    def post(self, request):
+        user = request.user
+        invite_code = request.data.get('invite_code')
+        if not invite_code:
+            return Response({'error': 'code not provided'}, status=status.HTTP_400_BAD_REQUEST)
+        if not Profile.objects.filter(invite_code=invite_code).exists():
+            return Response({'error': 'profile with such code does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        profile = Profile.objects.get(invite_code=invite_code)
+        profile.invited_users.add(user)
+        Profile.objects.filter(user=request.user).update(code_invited=invite_code)
+        return Response({'status': 'success', 
+                         'detail': 'invite code succeeded'
+                         })
+
 
 @login_required
 def index(request):
