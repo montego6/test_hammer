@@ -30,7 +30,6 @@ document.querySelector('#login-button').addEventListener('click', event => {
     }
     fetch('http://127.0.0.1:8000/api/login/', {
         method: 'post',
-        redirect: 'follow',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',
             'X-CSRFToken': csrf_token,

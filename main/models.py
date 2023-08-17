@@ -1,7 +1,10 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
 
-# Create your models here.
+
+User = get_user_model()
+
 
 class LoginCode(models.Model):
     code = models.CharField(max_length=4)
@@ -9,3 +12,9 @@ class LoginCode(models.Model):
             RegexValidator(regex=r"^7[\d]{10}$", message="Invalid phone number")
         ],)
     expires_at = models.DateTimeField()
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_profile')
+    invite_code = models.CharField(max_length=6, unique=True)
+    invited = models.ManyToManyField(User)

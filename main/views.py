@@ -6,8 +6,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from datetime import datetime, timedelta
-from .models import LoginCode
-from .funcs import generate_login_code
+from .models import LoginCode, Profile
+from .funcs import generate_login_code, generate_invite_code
 
 User = get_user_model()
 
@@ -38,18 +38,21 @@ class LoginView(APIView):
             user = authenticate(phone_number=phone_number)
             if user is None:
                 user = User.objects.create_user(phone_number=phone_number)
+                invite_code = generate_invite_code()
+                while Profile.objects.filter(invite_code=invite_code).exists():
+                    invite_code = generate_invite_code()
+                Profile.objects.create(user=user, invite_code=invite_code)
             login(request, user)
             return redirect('profile-page')
         return Response({'login': 'failed'})
+
+
 
 @login_required
 def index(request):
     return HttpResponse('Index page')
 
 
-@login_required
-def profile(request):
-    return HttpResponse('Profile page')
 
 @login_required
 def logout_view(request):
