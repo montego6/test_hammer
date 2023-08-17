@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from datetime import datetime, timedelta
 from .models import LoginCode, Profile
+from .serializers import ProfileSerializer
 from .funcs import generate_login_code, generate_invite_code
 
 User = get_user_model()
@@ -47,6 +48,17 @@ class LoginView(APIView):
         return Response({'login': 'failed'})
 
 
+class GetUserProfileView(APIView):
+    def get(self, request):
+        user = None
+        if hasattr(request, 'user'):
+            user = request.user
+        try:
+            profile = Profile.objects.get(user=user)
+        except Profile.DoesNotExist:
+            return Response({'error': 'profile does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 @login_required
 def index(request):

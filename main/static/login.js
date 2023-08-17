@@ -5,7 +5,7 @@ document.querySelector('#login-code-button').addEventListener('click', event => 
     const data = {
         phone_number: phone_number
     }
-    fetch('http://127.0.0.1:8000/api/login/get-code/', {
+    fetch('http://127.0.0.1:8000/api/login/code/', {
         method: 'post',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',

@@ -17,4 +17,5 @@ class LoginCode(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_profile')
     invite_code = models.CharField(max_length=6, unique=True)
-    invited = models.ManyToManyField(User)
+    invited_users = models.ManyToManyField(User)
+    code_invited = models.CharField(max_length=6, null=True)
