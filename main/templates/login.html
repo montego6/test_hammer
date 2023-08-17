@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login page</title>
+    <link href="{% static 'login.css' %}" rel="stylesheet">
+    <script src="{% static 'login.js' %}" defer></script>
+</head>
+<body>
+    {% csrf_token %}
+    <div id="login-form">
+        <h2>Login</h2>
+        <p>Введите ваш телефон в формате 7XXXXXXXXXX</p>
+        <label for="phone_number">Телефон</label>
+        <input type="text" name="phone_number">
+        <button id="login-button">Отправить</button>
+    </div>
+</body>
