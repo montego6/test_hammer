@@ -14,7 +14,7 @@ document.querySelector('#login-code-button').addEventListener('click', event => 
         body: JSON.stringify(data)
     }).then(response => response.json()).then(data => {
         console.log(data)
-        if (data.status === 'code sent') {
+        if (data.status === 'success') {
             document.querySelector('#login-first-step').classList.add('invisible')
             document.querySelector('#login-second-step').classList.remove('invisible')
         }
@@ -39,8 +39,7 @@ document.querySelector('#login-button').addEventListener('click', event => {
     .then(response => {
         if (response.redirected) {
             window.location.href = response.url;
-        } else {
-            response.json()
-        }   
+        } 
+        return response.json() 
     }).then(data => console.log(data))
 })

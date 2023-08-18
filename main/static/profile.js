@@ -22,5 +22,9 @@ document.querySelector('#button-get-invited').addEventListener('click', event =>
             'X-CSRFToken': csrf_token,
           },
         body: JSON.stringify(data)
-    }).then(response => response.json())
+    }).then(response => response.json()).then(data => {
+        if (data.status == 'success') {
+            document.querySelector('#get-invited').classList.add('invisible')
+        }
+    })
 })
