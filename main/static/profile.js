@@ -25,6 +25,8 @@ document.querySelector('#button-get-invited').addEventListener('click', event =>
     }).then(response => response.json()).then(data => {
         if (data.status == 'success') {
             document.querySelector('#get-invited').classList.add('invisible')
+        } else {
+            document.querySelector('#get-invited p:last-of-type').textContent = data.detail
         }
     })
 })

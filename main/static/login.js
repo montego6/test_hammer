@@ -17,6 +17,7 @@ document.querySelector('#login-code-button').addEventListener('click', event => 
         if (data.status === 'success') {
             document.querySelector('#login-first-step').classList.add('invisible')
             document.querySelector('#login-second-step').classList.remove('invisible')
+            document.querySelector('#login-second-step p span').textContent = data.code
         }
     })
 })

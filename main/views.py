@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from datetime import datetime, timedelta
 from .models import LoginCode, Profile
 from .serializers import ProfileSerializer
@@ -57,6 +58,8 @@ class LoginView(APIView):
 
 
 class GetUserProfileView(APIView):
+    permission_classes = (IsAuthenticated,)
+    
     def get(self, request):
         user = request.user
         try:
@@ -68,11 +71,11 @@ class GetUserProfileView(APIView):
     
 
 class GetInvitedView(APIView):
+    permission_classes = (IsAuthenticated,)
+    
     def post(self, request):
         user = request.user
-        if not user.is_authenticated:
-            return Response({'status': 'error', 'detail': 'you must login'}, status=status.HTTP_401_UNAUTHORIZED)
-        
+       
         try:
             user_profile = Profile.objects.get(user=user)
         except Profile.DoesNotExist:
@@ -84,14 +87,16 @@ class GetInvitedView(APIView):
         invite_code = request.data.get('invite_code')
         if not invite_code:
             return Response({'status': 'error', 'detail': 'code not provided'}, status=status.HTTP_400_BAD_REQUEST)
-        if not Profile.objects.filter(invite_code=invite_code).exists():
-            return Response({'status': 'error', 'detail': 'profile with such code does not exist'}, status=status.HTTP_403_FORBIDDEN)
         
-        profile = Profile.objects.get(invite_code=invite_code)
-        profile.invited_users.add(user)
-        Profile.objects.filter(user=request.user).update(code_invited=invite_code)
-        return Response({'status': 'success', 
-                         'detail': 'invite code accepted'
+        try:
+            profile = Profile.objects.get(invite_code=invite_code)
+        except Profile.DoesNotExist:
+            return Response({'status': 'error', 'detail': 'profile with such code does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            profile.invited_users.add(user)
+            Profile.objects.filter(user=request.user).update(code_invited=invite_code)
+            return Response({'status': 'success', 
+                            'detail': 'invite code accepted'
                          }, status=status.HTTP_200_OK)
 
 
