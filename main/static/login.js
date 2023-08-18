@@ -39,7 +39,7 @@ document.querySelector('#login-button').addEventListener('click', event => {
     })
     .then(response => {
         if (response.redirected) {
-            window.location.href = response.url;
+            window.location.href = 'http://127.0.0.1:8000/profile/';
         } 
         return response.json() 
     }).then(data => console.log(data))

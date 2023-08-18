@@ -8,6 +8,7 @@ urlpatterns = [
     path('login/', TemplateView.as_view(template_name='login.html'), name='login-page'),
     path('logout/', logout_view, name='logout'),
     path('profile/', TemplateView.as_view(template_name='profile.html'), name='profile-page'),
+    path('redoc/', TemplateView.as_view(template_name='redoc.html'), name='redoc'),
     path('api/login/code/', LoginGetCodeView.as_view(), name='api-login-code'),
     path('api/login/', LoginView.as_view(), name='api-login'),
     path('api/profile/', GetUserProfileView.as_view(), name='api-profile'),

@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from datetime import datetime, timedelta
+import time
 from .models import LoginCode, Profile
 from .serializers import ProfileSerializer
 from .funcs import generate_login_code, generate_invite_code
@@ -16,6 +17,7 @@ User = get_user_model()
 class LoginGetCodeView(APIView):
     def post(self, request):
         phone_number = request.data.get('phone_number')
+        time.sleep(1)
         code = generate_login_code()
         code_instance = LoginCode(code=code, phone_number=phone_number, expires_at=datetime.now() + timedelta(minutes=1))
         try:
@@ -52,7 +54,7 @@ class LoginView(APIView):
                     invite_code = generate_invite_code()
                 Profile.objects.create(user=user, invite_code=invite_code)
             login(request, user)
-            return redirect('profile-page')
+            return redirect('api-profile')
         else:
             return Response({'status': 'error', 'detail': 'such code does not exist or is expired'})
 
@@ -111,4 +113,4 @@ def logout_view(request):
     return redirect('login-page')
 
 
-# Create your views here.
+
