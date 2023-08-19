@@ -136,6 +136,16 @@ class GetInvitedView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
         else:
+            if user_profile.invited_users.filter(
+                phone_number=profile.user.phone_number
+            ).exists():
+                return Response(
+                    {
+                        "status": "error",
+                        "detail": "you can't be invited by a user who is invited by you",
+                    },
+                    status=status.HTTP_403_FORBIDDEN,
+                )
             profile.invited_users.add(user)
             Profile.objects.filter(user=request.user).update(code_invited=invite_code)
             return Response(
